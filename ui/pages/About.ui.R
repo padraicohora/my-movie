@@ -1,1 +1,1 @@
-three<-p("Third tab content test")
+aboutPage<-p("About Page")

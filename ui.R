@@ -16,11 +16,12 @@ library(tools)
 link_shiny <- tags$a(shiny::icon("github"), "Shiny", href = "https://github.com/rstudio/shiny", target = "_blank")
 link_posit <- tags$a(shiny::icon("r-project"), "Posit", href = "https://posit.co", target = "_blank")
 
-link_code <- tags$a(shiny::icon("github"), "Code", href = "https://github.com/padraicohora/my-movie", target = "_blank")
+link_code <- tags$a( "Code", href = "https://github.com/padraicohora/my-movie", target = "_blank")
 
-source("ui/pages/MovieFinder.ui.R")
-source("ui/pages/MyRecommendations.ui.R")
 source("ui/pages/About.ui.R")
+source("ui/pages/MovieFinder.ui.R")
+source("ui/pages/MyRatings.ui.R")
+source("ui/pages/MyRecommendations.ui.R")
 
 # Define UI for application that draws a histogram
 # shinyUI(
@@ -181,10 +182,10 @@ page_navbar(
     bg = "#0062cc",
     underline = TRUE
   ),
-  nav_panel(title = "Movie Finder", one),
-  nav_panel(title = "My Recommendations", two),
-  nav_panel(title = "My Ratings", three),
-  nav_panel(title = "About", three),
+  nav_panel(title = "Movie Finder", movieFinderPage),
+  nav_panel(title = "My Recommendations", myReccomendationsPage),
+  nav_panel(title = "My Ratings", myRatingsPage),
+  nav_panel(title = "About", aboutPage),
   nav_item(link_code),
   nav_spacer(),
   nav_menu(

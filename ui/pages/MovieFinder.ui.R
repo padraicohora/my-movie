@@ -1,9 +1,5 @@
-library(shiny)
-library(shinydashboard)
-library(bslib)
-library(ggplot2)
-library(tools)
 
+movieFinderPage<-p("Movie Finder Page")
 one<- p("First tab content test.")
 two<-fluidRow(
   box(title = "Author: Suresh Shanmugam", background = "black", width=7, collapsible = TRUE,
