@@ -13,7 +13,7 @@ library(ggplot2)
 library(tools)
 
 # Define server logic required to draw a histogram
-function(input, output, session) {
+server <- function(input, output, session) {
 
   new_plot_title <- eventReactive(
     eventExpr = input$update_plot_title,
@@ -28,4 +28,11 @@ function(input, output, session) {
       labs(title = new_plot_title())
   })
 
+  observeEvent(input$submit_button, {
+    showModal(modalDialog(
+      title = "Button Clicked",
+      "You clicked the submit button!",
+      easyClose = TRUE
+    ))
+  })
 }

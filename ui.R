@@ -13,6 +13,7 @@ library(bslib)
 library(ggplot2)
 library(tools)
 
+
 link_shiny <- tags$a(shiny::icon("github"), "Shiny", href = "https://github.com/rstudio/shiny", target = "_blank")
 link_posit <- tags$a(shiny::icon("r-project"), "Posit", href = "https://posit.co", target = "_blank")
 
@@ -176,7 +177,7 @@ source("ui/pages/MyRecommendations.ui.R")
 # )
 # )
 
-page_navbar(
+ui <- page_navbar(
   title = "My Movies",
   navbar_options = navbar_options(
     bg = "#0062cc",
