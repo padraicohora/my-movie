@@ -11,6 +11,9 @@ library(shiny)
 library(bslib)
 library(ggplot2)
 library(tools)
+library(DT)
+
+source("server/Movies.server.R")
 
 # Define server logic required to draw a histogram
 server <- function(input, output, session) {
@@ -27,12 +30,14 @@ server <- function(input, output, session) {
       geom_point(alpha = input$alpha, size = input$size) +
       labs(title = new_plot_title())
   })
+  
 
-  observeEvent(input$submit_button, {
+  output$input_movieFinder_list <- output_movieFinder_list
+  
+  observeEvent(input$action_button, {
     showModal(modalDialog(
-      title = "Button Clicked",
-      "You clicked the submit button!",
-      easyClose = TRUE
+      title = "Action Button Clicked",
+      paste("You clicked the action button for row", input$action_button)
     ))
   })
 }

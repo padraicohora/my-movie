@@ -35,8 +35,12 @@ page <- function(
           )
       )
     ),
-    fluidRow(children)
-  
+    fluidRow(
+      column(
+        width = 12,
+        children
+        )
+    )
   )
 }
 
