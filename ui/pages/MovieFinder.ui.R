@@ -22,7 +22,7 @@ two<-fluidRow(
       ))
   )
 )
-three<-p("Third tab content")
+
 
 
 Tab1 <- tabItem(tabName = "about",
