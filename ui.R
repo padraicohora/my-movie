@@ -7,12 +7,13 @@
 #    https://shiny.posit.co/
 #
 # install.packages("bslib")
+# install.packages("shinyjs")
 library(shiny)
 library(shinydashboard)
 library(bslib)
 library(ggplot2)
 library(tools)
-
+library(shinyjs)
 
 link_shiny <- tags$a(shiny::icon("github"), "Shiny", href = "https://github.com/rstudio/shiny", target = "_blank")
 link_posit <- tags$a(shiny::icon("r-project"), "Posit", href = "https://posit.co", target = "_blank")
@@ -178,21 +179,13 @@ source("ui/pages/MyRecommendations.ui.R")
 # )
 
 ui <- page_navbar(
+  useShinyjs(),
   title = "My Movies",
   navbar_options = navbar_options(
     bg = "#0062cc",
     underline = TRUE
   ),
-  nav_panel(title = "Movie Finder", tagList(
-    absolutePanel(
-      id = "overlay",
-      top = 100, left = 100, width = 300, height = 100,
-      style = "background-color: rgba(255, 255, 255, 0.8); border: 1px solid #ccc; padding: 10px;",
-      verbatimTextOutput("result"),
-    ),
-    movieFinderPage
-    ),
-  ),
+  nav_panel(title = "Movie Finder", movieFinderPage),
   nav_panel(title = "My Recommendations", myReccomendationsPage),
   nav_panel(title = "My Ratings", myRatingsPage),
   nav_panel(title = "About", aboutPage),

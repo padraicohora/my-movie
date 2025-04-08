@@ -56,10 +56,26 @@ server <- function(input, output, session) {
   observeEvent(input$rating_modal_submit_btn, {
     removeModal()
     newMovieRatings$items = c(newMovieCandidate(), newMovieRatings$items)
-    output$result <- renderText(paste("You have rated the movies ", paste(newMovieRatings$items, collapse= ", ")))
+    output$newMoviesRatingNotification <- renderText(paste("You have rated ", length(newMovieRatings$items), " new movies. You can now generate new recommendations." ))
   })
   
   observeEvent(input$rating_modal_cancel_btn, {
     removeModal()
+  })
+  
+  observe({
+    if (length(newMovieRatings$items) == 0) {
+      hide("newMovieRatingsOverlay")
+    } else {
+      show("newMovieRatingsOverlay")
+    }
+  })
+  
+  observeEvent(input$newMoviesRatingNotificationSubmitBtn, {
+    newMovieRatings$items = c()
+  })
+  
+  observeEvent(input$newMoviesRatingNotificationClearBtn, {
+    newMovieRatings$items = c()
   })
 }

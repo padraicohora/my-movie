@@ -4,7 +4,36 @@ library(DT)
 
 data("MovieLense")
 
-ui_movieList<- DTOutput('input_movieFinder_list')
+ui_movieList<- tagList(
+  absolutePanel(
+    id = "newMovieRatingsOverlay",
+    fixed = TRUE,
+    top = 100, left = 100, width = 300, height = 100,
+    style = "
+              width: calc(100vw - 200px);
+              z-index:9;
+              border-radius: 8px;
+              cursor: inherit;
+              background-color: transparent;
+              border: 0px solid rgb(204, 204, 204);
+          ",
+    card(
+      card_header(
+        "New Movies Rated"
+      ),
+      card_body(
+        fillable = TRUE,
+        textOutput("newMoviesRatingNotification"),
+      ),
+      card_body(
+        fillable = FALSE,
+        actionButton("newMoviesRatingNotificationSubmitBtn", "Get Recommendations"),
+        actionButton("newMoviesRatingNotificationClearBtn", "Clear Ratings")
+      )
+    )
+  ),
+  DTOutput('input_movieFinder_list')
+)
 
 # Convert the realRatingMatrix to a regular matrix
 movie_data_all <- as.data.frame(MovieLenseMeta)
