@@ -183,7 +183,16 @@ ui <- page_navbar(
     bg = "#0062cc",
     underline = TRUE
   ),
-  nav_panel(title = "Movie Finder", movieFinderPage),
+  nav_panel(title = "Movie Finder", tagList(
+    absolutePanel(
+      id = "overlay",
+      top = 100, left = 100, width = 300, height = 100,
+      style = "background-color: rgba(255, 255, 255, 0.8); border: 1px solid #ccc; padding: 10px;",
+      verbatimTextOutput("result"),
+    ),
+    movieFinderPage
+    ),
+  ),
   nav_panel(title = "My Recommendations", myReccomendationsPage),
   nav_panel(title = "My Ratings", myRatingsPage),
   nav_panel(title = "About", aboutPage),

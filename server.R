@@ -34,10 +34,32 @@ server <- function(input, output, session) {
 
   output$input_movieFinder_list <- output_movieFinder_list
   
-  observeEvent(input$action_button, {
+  newMovieCandidate <- reactiveVal(0)
+  newMovieRatings <- reactiveValues(items=c())
+  
+  observeEvent(input$movie_list_rating_action, {
+    newMovieCandidate(input$movie_list_rating_action)
+    currentMovie <- movie_data_all[input$movie_list_rating_action, "title"]
+    # get movie by index
     showModal(modalDialog(
-      title = "Action Button Clicked",
-      paste("You clicked the action button for row", input$action_button)
+      title = "Rate Movie",
+      paste("You clicked the action button for row", currentMovie),
+     
+      # show a rating star icon
+      footer = tagList(
+        actionButton("rating_modal_cancel_btn", "Cancel"),
+        actionButton("rating_modal_submit_btn", "Submit")
+      )
     ))
+  })
+  
+  observeEvent(input$rating_modal_submit_btn, {
+    removeModal()
+    newMovieRatings$items = c(newMovieCandidate(), newMovieRatings$items)
+    output$result <- renderText(paste("You have rated the movies ", paste(newMovieRatings$items, collapse= ", ")))
+  })
+  
+  observeEvent(input$rating_modal_cancel_btn, {
+    removeModal()
   })
 }

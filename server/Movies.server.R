@@ -43,10 +43,13 @@ genre_string <- function(genre){
 
 movie_data$genres <- sapply(movie_data$genre, genre_string)
 
+add_rating_button <- function(title){
+  sprintf('<span>%s <a href="%s" target="_blank">Imdb</a></span>', cleaned_title, url)
+}
 
 movie_data$action <- sprintf(
-  '<button onclick="Shiny.onInputChange(\'action_button\', %d)">Action</button>', 
-  seq_len(nrow(movie_data))
+  '<button onclick="Shiny.onInputChange(\'movie_list_rating_action\', %s)">Rate Movie</button>', 
+  row.names(movie_data)
   )
 
 movie_data <- movie_data[, c("title", "year", "genres", "action")]
@@ -59,10 +62,19 @@ output_movieFinder_list <- renderDT({
       escape = FALSE,  # Allow HTML content in the table
       filter = 'top',
       options = list(
-    
+        columnDefs = list(
+          list(
+            targets = 4,
+            render = JS(
+              "function(data, type, row, meta) {",
+              "console.log({data, type, row, meta})",
+              "return data;",
+              "}"
+            )
+          )
+        )
       ),
       colnames = c("Title", "Year", "Genres", "Action")
-
     )
   })
 
