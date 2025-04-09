@@ -23,12 +23,12 @@ ui_movieList<- tagList(
       ),
       card_body(
         fillable = TRUE,
-        textOutput("newMoviesRatingNotification"),
+        uiOutput("newMoviesRatingNotification"),
       ),
       card_body(
         fillable = FALSE,
         actionButton("newMoviesRatingNotificationSubmitBtn", "Get Recommendations"),
-        actionButton("newMoviesRatingNotificationClearBtn", "Clear Ratings")
+        actionButton("newMoviesRatingNotificationSubmitBtn", "Clear Ratings")
       )
     )
   ),

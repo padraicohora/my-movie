@@ -34,33 +34,57 @@ server <- function(input, output, session) {
 
   output$input_movieFinder_list <- output_movieFinder_list
   
-  newMovieCandidate <- reactiveVal(0)
-  newMovieRatings <- reactiveValues(items=c())
+  newMovieCandidate <- reactiveVal()
+  newMovieRatings <- reactiveValues(items=list())
   
   observeEvent(input$movie_list_rating_action, {
     newMovieCandidate(input$movie_list_rating_action)
-    currentMovie <- movie_data_all[input$movie_list_rating_action, "title"]
-    # get movie by index
-    showModal(modalDialog(
-      title = "Rate Movie",
-      paste("You clicked the action button for row", currentMovie),
-     
-      # show a rating star icon
-      footer = tagList(
-        actionButton("rating_modal_cancel_btn", "Cancel"),
-        actionButton("rating_modal_submit_btn", "Submit")
-      )
-    ))
+    
+  })
+  
+  observe({
+    if (is.null(newMovieCandidate())) {
+      removeModal()
+    } else {
+      currentMovie <- movie_data_all[newMovieCandidate(), "title"]
+      # get movie by index
+      showModal(modalDialog(
+        title = "Rate Movie",
+        tagList(
+          paste("You have selected ", currentMovie, " to rate. Provide your rating using the stars below."),
+          shinyRatings("star_rating")
+         ),
+        footer = tagList(
+          actionButton("rating_modal_cancel_btn", "Cancel"),
+          actionButton("rating_modal_submit_btn", "Submit")
+        )
+      ))
+    }
   })
   
   observeEvent(input$rating_modal_submit_btn, {
     removeModal()
-    newMovieRatings$items = c(newMovieCandidate(), newMovieRatings$items)
-    output$newMoviesRatingNotification <- renderText(paste("You have rated ", length(newMovieRatings$items), " new movies. You can now generate new recommendations." ))
+    newMovieRatings$items[[as.character(newMovieCandidate())]] <- input$star_rating
+    movieRatings<- sapply(names(newMovieRatings$items), function(key) {
+      sprintf("%s, Rating: %s", movie_data_all[key, "title"], newMovieRatings$items[[key]])
+    }) 
+    output$newMoviesRatingNotification <- renderUI({
+      tagList(
+        renderText(
+          paste("You have rated ", length(newMovieRatings$items), " new movies. You can now generate new recommendations." )
+        ),
+        lapply(
+          movieRatings,
+          helpText
+        )
+      )
+    })
+    newMovieCandidate(NULL)
   })
   
   observeEvent(input$rating_modal_cancel_btn, {
     removeModal()
+    newMovieCandidate(NULL)
   })
   
   observe({
