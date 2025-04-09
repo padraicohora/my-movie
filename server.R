@@ -96,6 +96,10 @@ server <- function(input, output, session) {
   })
   
   observeEvent(input$newMoviesRatingNotificationSubmitBtn, {
+    nav_select(
+      id='pages',
+      selected = "My Recommendations"
+    )
     newMovieRatings$items = c()
   })
   

@@ -183,6 +183,7 @@ source("ui/pages/MyRecommendations.ui.R")
 ui <- page_navbar(
   useShinyjs(),
   title = "My Movies",
+  id='pages',
   navbar_options = navbar_options(
     bg = "#0062cc",
     underline = TRUE
