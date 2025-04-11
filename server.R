@@ -88,10 +88,11 @@ server <- function(input, output, session) {
   })
   
   observe({
+    print("test 1")
     if (length(newMovieRatings$items) == 0) {
-      hide("newMovieRatingsOverlay")
+      shinyjs::hide("newMovieRatingsOverlay")
     } else {
-      show("newMovieRatingsOverlay")
+      shinyjs::show("newMovieRatingsOverlay")
     }
   })
   
