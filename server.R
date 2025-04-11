@@ -14,10 +14,11 @@ library(tools)
 library(DT)
 
 source("server/Movies.server.R")
+source("server/movies.module.R")
 
 # Define server logic required to draw a histogram
 server <- function(input, output, session) {
-
+  
   new_plot_title <- eventReactive(
     eventExpr = input$update_plot_title,
     valueExpr = {
@@ -61,26 +62,34 @@ server <- function(input, output, session) {
       ))
     }
   })
+  observeEvent(input$star_rating, {
+    newMovieRatings$items[[as.character(newMovieCandidate())]] <- input$star_rating
+  })
   
+  movieList <-reactive({
+    return() 
+  
+  })
   observeEvent(input$rating_modal_submit_btn, {
     removeModal()
-    newMovieRatings$items[[as.character(newMovieCandidate())]] <- input$star_rating
-    movieRatings<- sapply(names(newMovieRatings$items), function(key) {
+    movies_test<- sapply(names(newMovieRatings$items), function(key) {
       sprintf("%s, Rating: %s", movie_data_all[key, "title"], newMovieRatings$items[[key]])
-    }) 
+    })
     output$newMoviesRatingNotification <- renderUI({
       tagList(
         renderText(
           paste("You have rated ", length(newMovieRatings$items), " new movies. You can now generate new recommendations." )
         ),
         lapply(
-          movieRatings,
+          movies_test,
           helpText
         )
       )
     })
     newMovieCandidate(NULL)
   })
+  
+    # newRatingsMovieListServer("movies", reactive(newMovieRatings$items))
   
   observeEvent(input$rating_modal_cancel_btn, {
     removeModal()
@@ -107,4 +116,16 @@ server <- function(input, output, session) {
   observeEvent(input$newMoviesRatingNotificationClearBtn, {
     newMovieRatings$items = c()
   })
+  
+  
+  # Create a reactive value
+  reactive_text <- reactive({
+    sapply(names(newMovieRatings$items), function(key) {
+      sprintf("%s, Rating: %s", movie_data_all[key, "title"], newMovieRatings$items[[key]])
+    })
+  })
+  
+  # Call the module server function and pass the reactive value
+  mod_display_server("display1", reactive_text)
+  
 }
