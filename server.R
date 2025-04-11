@@ -66,10 +66,11 @@ server <- function(input, output, session) {
     newMovieRatings$items[[as.character(newMovieCandidate())]] <- input$star_rating
   })
   
-  movieList <-reactive({
-    return() 
-  
-  })
+  # reactive_text <- reactive({
+  #   sapply(names(newMovieRatings$items), function(key) {
+  #     sprintf("%s, Rating: %s", movie_data_all[key, "title"], newMovieRatings$items[[key]])
+  #   })
+  # })
   observeEvent(input$rating_modal_submit_btn, {
     removeModal()
     movies_test<- sapply(names(newMovieRatings$items), function(key) {
@@ -89,6 +90,17 @@ server <- function(input, output, session) {
     newMovieCandidate(NULL)
   })
   
+    
+  # Create a reactive value
+  reactive_text_2 <- reactive({
+    sapply(names(newMovieRatings$items), function(key) {
+      sprintf("%s, Rating: %s", movie_data_all[key, "title"], newMovieRatings$items[[key]])
+    })
+  })
+  
+  # Call the module server function and pass the reactive value
+  newRatingsMovieListServer("display1", reactive_text_2)
+  newRatingsMovieListServer("display2", reactive_text_2)
     # newRatingsMovieListServer("movies", reactive(newMovieRatings$items))
   
   observeEvent(input$rating_modal_cancel_btn, {
@@ -117,15 +129,6 @@ server <- function(input, output, session) {
     newMovieRatings$items = c()
   })
   
-  
-  # Create a reactive value
-  reactive_text <- reactive({
-    sapply(names(newMovieRatings$items), function(key) {
-      sprintf("%s, Rating: %s", movie_data_all[key, "title"], newMovieRatings$items[[key]])
-    })
-  })
-  
-  # Call the module server function and pass the reactive value
-  mod_display_server("display1", reactive_text)
+
   
 }
