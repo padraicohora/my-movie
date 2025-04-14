@@ -15,6 +15,7 @@ library(DT)
 
 source("server/Movies.server.R")
 source("server/movies.module.R")
+source("server/recommender.module.R")
 
 # Define server logic required to draw a histogram
 server <- function(input, output, session) {
@@ -37,6 +38,7 @@ server <- function(input, output, session) {
   
   newMovieCandidate <- reactiveVal()
   newMovieRatings <- reactiveValues(items=list())
+  movieRatings <- reactiveValues(items=list())
   
   observeEvent(input$movie_list_rating_action, {
     newMovieCandidate(input$movie_list_rating_action)
@@ -65,14 +67,11 @@ server <- function(input, output, session) {
   observeEvent(input$star_rating, {
     newMovieRatings$items[[as.character(newMovieCandidate())]] <- input$star_rating
   })
+
   
-  # reactive_text <- reactive({
-  #   sapply(names(newMovieRatings$items), function(key) {
-  #     sprintf("%s, Rating: %s", movie_data_all[key, "title"], newMovieRatings$items[[key]])
-  #   })
-  # })
   observeEvent(input$rating_modal_submit_btn, {
     removeModal()
+    newMovieRatings$items[[as.character(newMovieCandidate())]] <- input$star_rating
     movies_test<- sapply(names(newMovieRatings$items), function(key) {
       sprintf("%s, Rating: %s", movie_data_all[key, "title"], newMovieRatings$items[[key]])
     })
@@ -87,6 +86,7 @@ server <- function(input, output, session) {
         )
       )
     })
+    # movieRatings$items <- newMovieCandidate$items
     newMovieCandidate(NULL)
   })
   
@@ -98,10 +98,15 @@ server <- function(input, output, session) {
     })
   })
   
-  # Call the module server function and pass the reactive value
   newRatingsMovieListServer("display1", reactive_text_2)
-  newRatingsMovieListServer("display2", reactive_text_2)
-    # newRatingsMovieListServer("movies", reactive(newMovieRatings$items))
+  
+  recs<- reactive({sapply(names(newMovieRatings$items), function(key) {
+    sprintf("%s", movie_data_all[key, "title"])
+  })})
+  my_list <- list(Name = c("Alice", "Bob", "Charlie"), Age = c(25, 30, 35))
+  movieRecommendationsServer("recommendations", reactive({
+    newMovieRatings
+    }))
   
   observeEvent(input$rating_modal_cancel_btn, {
     removeModal()
@@ -109,7 +114,6 @@ server <- function(input, output, session) {
   })
   
   observe({
-    print("test 1")
     if (length(newMovieRatings$items) == 0) {
       shinyjs::hide("newMovieRatingsOverlay")
     } else {
@@ -122,7 +126,7 @@ server <- function(input, output, session) {
       id='pages',
       selected = "My Recommendations"
     )
-    newMovieRatings$items = c()
+    # newMovieRatings$items = c()
   })
   
   observeEvent(input$newMoviesRatingNotificationClearBtn, {
