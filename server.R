@@ -14,9 +14,10 @@ library(tools)
 library(DT)
 
 source("server/Movies.server.R")
-source("server/movies.module.R")
+source("server/movieRecommendations.module.R")
 source("server/recommender.module.R")
-
+source("server/myratings.module.R")
+source("server/movieFinder.module.R")
 # Define server logic required to draw a histogram
 server <- function(input, output, session) {
   
@@ -34,7 +35,11 @@ server <- function(input, output, session) {
   })
   
 
-  output$input_movieFinder_list <- output_movieFinder_list
+ 
+  
+  allMovies <- reactiveValues(movies=movie_data)
+  movieFinderMovies <- reactiveValues(movies=movie_data)
+  myRatingsMovies <- reactiveValues()
   
   newMovieCandidate <- reactiveVal()
   newMovieRatings <- reactiveValues(items=list())
@@ -46,10 +51,13 @@ server <- function(input, output, session) {
   })
   
   observe({
+    allMoviesReactive<- allMovies$movies
     if (is.null(newMovieCandidate())) {
       removeModal()
     } else {
-      currentMovie <- movie_data_all[newMovieCandidate(), "title"]
+ 
+      currentMovie <- allMoviesReactive[newMovieCandidate(), "title"]
+      
       # get movie by index
       showModal(modalDialog(
         title = "Rate Movie",
@@ -70,46 +78,66 @@ server <- function(input, output, session) {
 
   
   observeEvent(input$rating_modal_submit_btn, {
+    allMoviesReactive<- allMovies$movies
     removeModal()
-    newMovieRatings$items[[as.character(newMovieCandidate())]] <- input$star_rating
+    ratingCandidate <- newMovieCandidate()
+   
+    newMovieRatings$items[[as.character(ratingCandidate)]] <- input$star_rating
     movies_test<- sapply(names(newMovieRatings$items), function(key) {
-      sprintf("%s, Rating: %s", movie_data_all[key, "title"], newMovieRatings$items[[key]])
+      sprintf("%s, Rating: %s", allMoviesReactive[key, "title"], newMovieRatings$items[[key]])
     })
     output$newMoviesRatingNotification <- renderUI({
       tagList(
         renderText(
           paste("You have rated ", length(newMovieRatings$items), " new movies. You can now generate new recommendations." )
         ),
-        # lapply(
-        #   movies_test,
-        #   helpText
-        # )
+        lapply(
+          movies_test,
+          helpText
+        )
       )
     })
-    # movieRatings$items <- newMovieCandidate$items
+    movieRatings$items <- c(newMovieRatings$items, movieRatings$items)
+    item_to_remove <- which(movieFinderMovies$movies$title == allMoviesReactive[ratingCandidate, ]$title)
+
+    rating<- allMoviesReactive[ratingCandidate, ]
+    rating$rating <- input$star_rating
+    myRatingsMovies$movies<-rbind(myRatingsMovies$movies, rating)
+    movieFinderMovies$movies<- movieFinderMovies$movies[-item_to_remove, ]
+    
     newMovieCandidate(NULL)
   })
   
     
   # Create a reactive value
   reactive_text_2 <- reactive({
+    allMoviesReactive<- allMovies$movies
     sapply(names(newMovieRatings$items), function(key) {
-      sprintf("%s, Rating: %s", movie_data_all[key, "title"], newMovieRatings$items[[key]])
+      sprintf("%s, Rating: %s", allMoviesReactive[key, "title"], newMovieRatings$items[[key]])
     })
   })
+  
+  output$input_movieFinder_list <- movieFinderMovieListServer(
+    "finder", 
+    reactive({
+      movieFinderMovies
+    })
+  )
   
   newRatingsMovieListServer("display1", reactive_text_2)
   
   recs<- reactive({sapply(names(newMovieRatings$items), function(key) {
-    sprintf("%s", movie_data_all[key, "title"])
+    allMoviesReactive<- allMovies$movies
+    sprintf("%s", allMoviesReactive[key, "title"])
   })})
-  my_list <- list(Name = c("Alice", "Bob", "Charlie"), Age = c(25, 30, 35))
-  
   
   movieRecommendationsServer(
     "recommendations", 
     reactive({
-      newMovieRatings
+      myRatingsMovies
+    }), 
+    reactive({
+      allMovies
     })
   )
   
@@ -126,23 +154,24 @@ server <- function(input, output, session) {
     }
   })
   
-  
   observeEvent(input$newMoviesRatingNotificationSubmitBtn, {
     nav_select(
       id='pages',
       selected = "My Recommendations"
     )
-    print(1)
-    showPageSpinner(caption="Getting your recommendations .. this takes a while")
-    print(2)
-    Sys.sleep(1)
-    # newMovieRatings$items = c()
+    newMovieRatings$items <- list()
+    showPageSpinner(caption="Getting your recommendations ... this takes a while")
   })
   
   observeEvent(input$newMoviesRatingNotificationClearBtn, {
-    newMovieRatings$items = c()
+    newMovieRatings$items <- list()
   })
   
-
+  output$myRatingsDataTable <-   myRatingsMovieListServer(
+    "ratings", 
+    reactive({
+      myRatingsMovies
+    })
+  )
   
 }

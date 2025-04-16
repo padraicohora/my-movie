@@ -31,14 +31,14 @@ movieRecommendationsUi <- function(id) {
 }
 
 
-movieRecommendationsServer <- function(id, reactive_user_selection) {
+movieRecommendationsServer <- function(id, reactive_user_selection, allMovies) {
   moduleServer(id, function(input, output, session) {
    
     output$recommendations <- renderTable({
       
       list<- reactive_user_selection();
-      user_selection<- list$movies$ratings
-      print(user_selection)
+      allMoviesReactive<- allMovies()$movies
+      user_selection<- list$movies
       # pass user selected list of ratings to the recommender model
       # recommendations<- movie_recommendation(list$items)
       no_result <- data.frame(matrix(NA,1))
@@ -49,14 +49,16 @@ movieRecommendationsServer <- function(id, reactive_user_selection) {
       }
       
       movieLense_matrix <- as(MovieLense, "matrix")
-      
+
       null_matrix <- matrix(NA,nrow=1, ncol=1664)
       
-      for (key in user_selection) {
-        index <- as.numeric(key)+1
-        null_matrix[1,index] <- user_selection[[key]]
+      item_to_remove <- which(allMoviesReactive$title %in% user_selection$title)
+      
+      for (item in item_to_remove) {
+        null_matrix[1,item] <- user_selection[item,]$rating
       }
       
+      print(null_matrix)
       # Calculate the column means, ignoring NA values
       # column_means <- colMeans(movieLense_matrix)
       

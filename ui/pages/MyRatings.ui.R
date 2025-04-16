@@ -1,6 +1,6 @@
 source("ui/components/page.component.R")
-
+source("server/myratings.module.R")
 myRatingsPage<-page(
   title="My Ratings Page", 
-  children=plotOutput("plot")
+  children=myRatingsMovieListUi("ratings", "myRatingsDataTable")
   )

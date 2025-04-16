@@ -1,4 +1,6 @@
-
+set.seed(1234)
+library(recommenderlab)
+library(DT)
 
 data("MovieLense")
 
@@ -25,7 +27,6 @@ genre_string <- function(genre){
 }
 
 movie_data$genres <- sapply(movie_data$genre, genre_string)
-
 
 
  
