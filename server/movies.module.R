@@ -33,19 +33,93 @@ movieRecommendationsUi <- function(id) {
 
 movieRecommendationsServer <- function(id, reactive_user_selection) {
   moduleServer(id, function(input, output, session) {
-    
-    my_list <- list(Name = c("Alice", "Bob", "Charlie"), Age = c(25, 30, 35))
-
+    # observe({
+    #   list<- reactive_user_selection();
+    #   # pass user selected list of ratings to the recommender model
+    #   recommendations<- movie_recommendation(list$items)
+    #   
+    # })
+   
     output$recommendations <- renderTable({
-       # my_df <- as.data.frame(reactive_user_selection())
+      
+      # progress <- Progress$new(session, min = 1, max = 15)
+      # on.exit(progress$close())
+      # 
+      # # Reactive value to track calculation progress
+      # calc_done <- reactiveVal(FALSE)
+      # observe({
+      #   progress$set(message = 'Calculation in progress',
+      #                detail = 'This may take a while...')
+      #   
+      #   for (i in 1:15) {
+      #     progress$set(value = i)
+      #     Sys.sleep(0.5)
+      #   }
+      #   
+      #   # Mark calculation as done
+      #   calc_done(TRUE)
+      # })
+      
+      observe({
+      
+        print(3)
+        hidePageSpinner()
+
+      })
+      
       list<- reactive_user_selection();
+      user_selection<- list$items
+      # pass user selected list of ratings to the recommender model
+      # recommendations<- movie_recommendation(list$items)
+      no_result <- data.frame(matrix(NA,1))
+      no_result[1,1] <- "Sorry, there is not enough information in our database on the movies you've selected. Try to select different movies you like."
       
-       # rendered<- sapply(names(list$items), function(key) {
-       #   sprintf("%s, ")
-       # })
-       # displayMovieSelection(rendered)
+      if(length(user_selection) ==0 ){
+        return(no_result)
+      }
       
-      movie_recommendation(list$items)
+      movieLense_matrix <- as(MovieLense, "matrix")
+      
+      null_matrix <- matrix(NA,nrow=1, ncol=1664)
+      
+      for (key in names(user_selection)) {
+        index <- as.numeric(key)+1
+        null_matrix[1,index] <- user_selection[[key]]
+      }
+      
+      # Calculate the column means, ignoring NA values
+      # column_means <- colMeans(movieLense_matrix)
+      
+      # Replace NA values in the first row with column means
+      # null_matrix[1, ] <- ifelse(is.na(null_matrix[1, ]), column_means, null_matrix[1, ])
+      
+      movieLense_matrix <- rbind(movieLense_matrix, null_matrix)
+      # #Convert rating matrix into a sparse matrix
+      ratingMatrix <- as(movieLense_matrix, "realRatingMatrix")
+      
+      recommender_model <- Recommender(ratingMatrix, method = "SVDF")
+      recom <- predict(recommender_model, ratingMatrix[nrow(movieLense_matrix)], n=10)
+      recom_list <- as(recom, "list")
+      
+      recom_result <- data.frame(matrix(NA,10))
+      
+      
+     
+      
+     
+      if (as.character(recom_list[1])=='character(0)'){
+        
+        return(no_result)
+        # results<- no_result
+      } else {
+        for (i in c(1:10)){
+          recom_result[i,1] <- as.character(subset(MovieLenseMeta,MovieLenseMeta$title == recom_list[[1]][i])$title)
+        }
+        
+        return(recom_result)
+        # results<-recom_result
+      }
+      
     })
   })
 }

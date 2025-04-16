@@ -80,10 +80,10 @@ server <- function(input, output, session) {
         renderText(
           paste("You have rated ", length(newMovieRatings$items), " new movies. You can now generate new recommendations." )
         ),
-        lapply(
-          movies_test,
-          helpText
-        )
+        # lapply(
+        #   movies_test,
+        #   helpText
+        # )
       )
     })
     # movieRatings$items <- newMovieCandidate$items
@@ -104,9 +104,14 @@ server <- function(input, output, session) {
     sprintf("%s", movie_data_all[key, "title"])
   })})
   my_list <- list(Name = c("Alice", "Bob", "Charlie"), Age = c(25, 30, 35))
-  movieRecommendationsServer("recommendations", reactive({
-    newMovieRatings
-    }))
+  
+  
+  movieRecommendationsServer(
+    "recommendations", 
+    reactive({
+      newMovieRatings
+    })
+  )
   
   observeEvent(input$rating_modal_cancel_btn, {
     removeModal()
@@ -121,11 +126,16 @@ server <- function(input, output, session) {
     }
   })
   
+  
   observeEvent(input$newMoviesRatingNotificationSubmitBtn, {
     nav_select(
       id='pages',
       selected = "My Recommendations"
     )
+    print(1)
+    showPageSpinner(caption="Getting your recommendations .. this takes a while")
+    print(2)
+    Sys.sleep(1)
     # newMovieRatings$items = c()
   })
   

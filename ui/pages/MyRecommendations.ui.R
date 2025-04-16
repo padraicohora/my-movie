@@ -4,6 +4,7 @@ myReccomendationsPage<-page(
   title="Recommendations Page", 
   children=tagList(
     newRatingsMovieListUi("display1"),
+    useBusyIndicators(),
     movieRecommendationsUi("recommendations")
   )
 )
