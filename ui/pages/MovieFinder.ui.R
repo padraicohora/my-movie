@@ -7,7 +7,7 @@ movieFinderPage<- page(
       title = "List", 
       movieFinderMovieListUi("finder"),
     ),
-    nav_panel(title = "Genre", p("Second tab content.")),
+    # nav_panel(title = "Genre", p("Second tab content.")),
     nav_panel(title = "Stats", p("Third tab content")),
   )
 )

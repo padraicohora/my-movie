@@ -26,7 +26,7 @@ myRatingsMovieListServer <- function(id, data) {
       list<- data();
       user_ratings<- list$movies[, c("title", "genres", "rating")]
       # movie_data <- movie_data_all[, c("title", "genres", "rating")]
-      print(user_ratings)
+   
       # print(user_ratings)
       # 
       # for (key in names(user_ratings)) {
@@ -48,19 +48,7 @@ myRatingsMovieListServer <- function(id, data) {
         user_ratings,
         escape = FALSE,  # Allow HTML content in the table
         filter = 'top',
-        # options = list(
-        #   columnDefs = list(
-        #     list(
-        #       targets = 4,
-        #       render = JS(
-        #         "function(data, type, row, meta) {",
-        #         "console.log({data, type, row, meta})",
-        #         "return data;",
-        #         "}"
-        #       )
-        #     )
-        #   )
-        # ),
+        selection = "none",
         colnames = c("Title", "Genres", "Rating")
       )
     })

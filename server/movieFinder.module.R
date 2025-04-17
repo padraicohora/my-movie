@@ -1,4 +1,4 @@
-
+library(DT)
 # Define the UI for the module
 movieFinderMovieListUi <- function(id, dtId) {
   ns <- NS(id)
@@ -41,41 +41,35 @@ movieFinderMovieListServer <- function(id, data) {
     renderDT({
       d<- data()
       movie_data<- d$movies
-  
-      combine_title_url <- function(title, url) {
-        cleaned_title <- remove_year(title)
-        sprintf('<span>%s <a href="%s" target="_blank">Imdb</a></span>', cleaned_title, url)
-      }
+     
+      # combine_title_url <- function(title, url) {
+      #   cleaned_title <- remove_year(title)
+      #   sprintf('<span>%s <a href="%s" target="_blank">Imdb</a></span>', cleaned_title, url)
+      # }
+      # 
+      # movie_data$title <- mapply(combine_title_url, movie_data$title, movie_data$url)
       
-      movie_data$title <- mapply(combine_title_url, movie_data$title, movie_data$url)
-      
-      add_rating_button <- function(title){
-        sprintf('<span>%s <a href="%s" target="_blank">Imdb</a></span>', cleaned_title, url)
-      }
+      # add_rating_button <- function(title){
+      #   sprintf('<span>%s <a href="%s" target="_blank">Imdb</a></span>', cleaned_title, url)
+      # }
       
       movie_data$action <- sprintf(
         '<button onclick="Shiny.onInputChange(\'movie_list_rating_action\', %s)">Rate Movie</button>', 
         row.names(movie_data)
       )
+    
       
       movie_data <- movie_data[, c("title", "year", "genres", "action")]    
+      print(str(movie_data))
       datatable(
         movie_data,
         escape = FALSE,  # Allow HTML content in the table
         filter = 'top',
-        # options = list(
-        #   columnDefs = list(
-        #     list(
-        #       targets = 4,
-        #       render = JS(
-        #         "function(data, type, row, meta) {",
-        #         "console.log({data, type, row, meta})",
-        #         "return data;",
-        #         "}"
-        #       )
-        #     )
-        #   )
-        # ),
+        selection = "none",
+        options = list(
+          columnDefs = list(list(targets = c(4), searchable = FALSE)),
+          pageLength = 20
+        ),
         colnames = c("Title", "Year", "Genres", "Action")
       )
     })

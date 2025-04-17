@@ -196,10 +196,10 @@ ui <- page_navbar(
   nav_panel(title = "About", aboutPage),
   nav_item(link_code),
   nav_spacer(),
-  nav_menu(
-    title = "Profiles",
-    align = "right",
-    nav_item(link_shiny),
-    nav_item(link_posit)
-  )
+  # nav_menu(
+  #   title = "Profiles",
+  #   align = "right",
+  #   nav_item(link_shiny),
+  #   nav_item(link_posit)
+  # )
 )
