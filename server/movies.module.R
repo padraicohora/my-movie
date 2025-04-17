@@ -1,4 +1,4 @@
-source("server/recommender.module.R")
+source("./server/recommender.module.R")
 
 # Define the UI for the module
 newRatingsMovieListUi <- function(id) {
@@ -27,8 +27,8 @@ displayMovieSelection <- function(selection){
 
 movieRecommendationsUi <- function(id) {
   ns <- NS(id)
-  uiOutput(ns("recommendationButton"))
-   # tableOutput(ns("recommendations"))
+  # uiOutput(ns("recommendationButton"))
+   tableOutput(ns("recommendations"))
  
   
 }

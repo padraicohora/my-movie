@@ -1,1 +1,1 @@
-source("auto_lint.R")
+source("./auto_lint.R")

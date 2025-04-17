@@ -1,9 +1,9 @@
-source("ui/components/page.component.R")
+source("./ui/components/page.component.R")
 
 aboutPage<-page(
   title="About Page", 
+  pageInfoText="Page gives appliaction information",
   children=tagList(
-    
     p("This Shiny R project creates an interactive movie recommendation system. Users can rate a list of movies, and the system provides personalized movie recommendations based on their ratings. The project leverages the ",
       a("recommenderlab package", href = "https://cran.r-project.org/web/packages/recommenderlab/index.html"),
       ", utilizing the ",

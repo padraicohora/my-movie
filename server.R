@@ -13,11 +13,11 @@ library(ggplot2)
 library(tools)
 library(DT)
 
-source("server/Movies.server.R")
-source("server/movieRecommendations.module.R")
-source("server/recommender.module.R")
-source("server/myratings.module.R")
-source("server/movieFinder.module.R")
+source("./server/Movies.server.R")
+source("./server/movieRecommendations.module.R")
+source("./server/recommender.module.R")
+source("./server/myratings.module.R")
+source("./server/movieFinder.module.R")
 # Define server logic required to draw a histogram
 server <- function(input, output, session) {
   

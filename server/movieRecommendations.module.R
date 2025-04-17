@@ -1,4 +1,4 @@
-source("server/recommender.module.R")
+source("./server/recommender.module.R")
 
 # Define the UI for the module
 newRatingsMovieListUi <- function(id) {
@@ -59,7 +59,7 @@ movieRecommendationsServer <- function(id, reactive_user_selection, allMovies) {
         null_matrix[1,item] <- user_selection[item,]$rating
       }
       
-      print(null_matrix)
+  
       # Calculate the column means, ignoring NA values
       # column_means <- colMeans(movieLense_matrix)
       

@@ -24,10 +24,10 @@ link_posit <- tags$a(shiny::icon("r-project"), "Posit", href = "https://posit.co
 
 link_code <- tags$a( "Code", href = "https://github.com/padraicohora/my-movie", target = "_blank")
 
-source("ui/pages/About.ui.R")
-source("ui/pages/MovieFinder.ui.R")
-source("ui/pages/MyRatings.ui.R")
-source("ui/pages/MyRecommendations.ui.R")
+source("./ui/pages/About.ui.R")
+source("./ui/pages/MovieFinder.ui.R")
+source("./ui/pages/MyRatings.ui.R")
+source("./ui/pages/MyRecommendations.ui.R")
 
 # Define UI for application that draws a histogram
 # shinyUI(

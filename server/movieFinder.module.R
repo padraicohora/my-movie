@@ -54,13 +54,15 @@ movieFinderMovieListServer <- function(id, data) {
       # }
       
       movie_data$action <- sprintf(
-        '<button onclick="Shiny.onInputChange(\'movie_list_rating_action\', %s)">Rate Movie</button>', 
+        '<button onclick="Shiny.onInputChange(\'movie_list_rating_action\', %s)" class="btn btn-outline-success btn-sm">
+        Rate Movie
+        </button>', 
         row.names(movie_data)
       )
     
       
       movie_data <- movie_data[, c("title", "year", "genres", "action")]    
-      print(str(movie_data))
+
       datatable(
         movie_data,
         escape = FALSE,  # Allow HTML content in the table

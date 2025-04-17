@@ -3,7 +3,7 @@ set.seed(1234)
 library(recommenderlab)
 
 data("MovieLense")
-print(MovieLense)
+
 str(MovieLense)
 
 ## look at the first few ratings of the first user
