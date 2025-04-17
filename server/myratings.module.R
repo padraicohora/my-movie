@@ -2,27 +2,27 @@
 # Define the UI for the module
 myRatingsMovieListUi <- function(id, dtId) {
   ns <- NS(id)
-  DTOutput(dtId)
+  
+  uiOutput(ns("table_ui"))
 }
 
 # Define the server logic for the module
 myRatingsMovieListServer <- function(id, data) {
   moduleServer(id, function(input, output, session) {
     
-   
-    # movieLense_matrix <- as(MovieLense, "matrix")
-    # movie_data_all <- as.data.frame(MovieLenseMeta)
-    
-    # matrix_data <- matrix()
-    
-    matrix_data <- matrix( ncol = 4)
-    
-    # matrix_data <- matrix(ncol = 4)
-    
-    
-
-    renderDT({
-      # matrix_data <- matrix()
+    output$table_ui <- renderUI({
+      list<- data();
+      user_ratings<- list$movies
+      if (length(user_ratings) ==0) {
+        tagList(h3("No data available"), 
+        p("You need to rate movies on the movie finder page first "))
+      } else {
+        DTOutput(session$ns("table"))
+      }
+    })
+  
+    output$table <- renderDT({
+      matrix_data <- matrix( ncol = 4)
       list<- data();
       user_ratings<- list$movies[, c("title", "genres", "rating")]
       # movie_data <- movie_data_all[, c("title", "genres", "rating")]

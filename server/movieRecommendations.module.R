@@ -42,9 +42,10 @@ movieRecommendationsServer <- function(id, reactive_user_selection, allMovies) {
       # pass user selected list of ratings to the recommender model
       # recommendations<- movie_recommendation(list$items)
       no_result <- data.frame(matrix(NA,1))
-      no_result[1,1] <- "Sorry, there is not enough information in our database on the movies you've selected. Try to select different movies you like."
+      no_result[1,1] <- "You need to rate movies on the movie finder page first"
       
       if(length(user_selection) ==0 ){
+        colnames(no_result) <- "No results"
         return(no_result)
       }
       
@@ -80,14 +81,14 @@ movieRecommendationsServer <- function(id, reactive_user_selection, allMovies) {
       })
       
       if (as.character(recom_list[1])=='character(0)'){
-        
+        colnames(no_result) <- "No results"
         return(no_result)
         # results<- no_result
       } else {
         for (i in c(1:10)){
           recom_result[i,1] <- as.character(subset(MovieLenseMeta,MovieLenseMeta$title == recom_list[[1]][i])$title)
         }
-        
+        colnames(recom_result) <- "Funk SVD Collaborative Filtering Results"
         return(recom_result)
         # results<-recom_result
       }
