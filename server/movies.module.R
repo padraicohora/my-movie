@@ -27,7 +27,10 @@ displayMovieSelection <- function(selection){
 
 movieRecommendationsUi <- function(id) {
   ns <- NS(id)
-  tableOutput(ns("recommendations"))
+  uiOutput(ns("recommendationButton"))
+   # tableOutput(ns("recommendations"))
+ 
+  
 }
 
 
@@ -38,7 +41,7 @@ movieRecommendationsServer <- function(id, reactive_user_selection) {
       
       list<- reactive_user_selection();
       user_selection<- list$movies$ratings
-      print(user_selection)
+
       # pass user selected list of ratings to the recommender model
       # recommendations<- movie_recommendation(list$items)
       no_result <- data.frame(matrix(NA,1))
@@ -88,6 +91,16 @@ movieRecommendationsServer <- function(id, reactive_user_selection) {
         
         return(recom_result)
         # results<-recom_result
+      }
+      
+    })
+    
+    output$recommendationButton <- renderUI({
+      list<- reactive_user_selection();
+      user_selection<- list$movies$ratings
+         print(length(user_selection))
+      if(length(user_selection) > 0 ){
+        actionButton("newMoviesRatingNotificationSubmitBtn", "Get Recommendations")
       }
       
     })

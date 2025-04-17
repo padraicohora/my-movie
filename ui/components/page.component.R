@@ -30,6 +30,7 @@ page <- function(
           "
         ) |>
           popover(
+            style = "padding: 0 10px;",
             helpText(pageInfoText),
             title = "Page Information",
           )
