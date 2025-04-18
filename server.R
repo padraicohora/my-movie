@@ -6,13 +6,8 @@
 #
 #    https://shiny.posit.co/
 #
-
-library(shiny)
-library(bslib)
-library(ggplot2)
-library(tools)
-library(DT)
-
+library(shinyRatings)
+library(shinycssloaders)
 source("./server/Movies.server.R")
 source("./server/movieRecommendations.module.R")
 source("./server/recommender.module.R")
@@ -42,28 +37,35 @@ server <- function(input, output, session) {
   myRatingsMovies <- reactiveValues()
   
   newMovieCandidate <- reactiveVal()
+  newMovieCandidateTitle <- reactiveVal()
   newMovieRatings <- reactiveValues(items=list())
   movieRatings <- reactiveValues(items=list())
   
   observeEvent(input$movie_list_rating_action, {
-    newMovieCandidate(input$movie_list_rating_action)
-    
+    # print(paste("movie_list_rating_action", input$movie_list_rating_action))
+    # print(paste("movie at index", movie_data[input$movie_list_rating_action, ]))
+    # print(paste("using match", movie_data[match(input$movie_list_rating_action, rownames(movie_data)),]))
+    # item_to_remove <- which(movieFinderMovies$movies$title == allMoviesReactive[ratingCandidate, ]$title)
+    newMovieCandidate(match(input$movie_list_rating_action, rownames(allMovies$movies)))
+    newMovieCandidateTitle(allMovies$movies[match(input$movie_list_rating_action, rownames(allMovies$movies)), "title"])
+    print(allMovies$movies[match(input$movie_list_rating_action, rownames(allMovies$movies)), "title"])
   })
   
-  observe({
+  observeEvent(newMovieCandidate(), {
     allMoviesReactive<- allMovies$movies
     if (is.null(newMovieCandidate())) {
       removeModal()
     } else {
  
-      currentMovie <- allMoviesReactive[newMovieCandidate(), "title"]
+      # currentMovie <- allMoviesReactive[newMovieCandidate(), "title"]
+      currentMovie <- newMovieCandidateTitle()
       
       # get movie by index
       showModal(modalDialog(
         title = "Rate Movie",
         tagList(
           paste("You have selected ", currentMovie, " to rate. Provide your rating using the stars below."),
-          shinyRatings("star_rating")
+          shinyRatings::shinyRatings("star_rating")
          ),
         footer = tagList(
           actionButton("rating_modal_cancel_btn", "Cancel"),
@@ -160,7 +162,7 @@ server <- function(input, output, session) {
       selected = "My Recommendations"
     )
     newMovieRatings$items <- list()
-    showPageSpinner(caption="Getting your recommendations ... this takes a while")
+    shinycssloaders::showPageSpinner(caption="Getting your recommendations ... this takes a while")
   })
   
   observeEvent(input$newMoviesRatingNotificationClearBtn, {

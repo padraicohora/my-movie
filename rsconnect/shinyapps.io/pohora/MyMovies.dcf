@@ -5,7 +5,7 @@ account: pohora
 server: shinyapps.io
 hostUrl: https://api.shinyapps.io/v1
 appId: 14551045
-bundleId: 10134784
+bundleId: 10135314
 url: https://pohora.shinyapps.io/MyMovies/
 version: 1
 asMultiple: FALSE

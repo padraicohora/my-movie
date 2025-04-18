@@ -1,5 +1,17 @@
+install.packages("shinyjs")
+install.packages("shinyRatings")
+install.packages("shinycssloaders")
 library(shiny)
-
+library(bslib)
+library(ggplot2)
+library(tools)
+library(DT)
+library(shinydashboard)
+library(tools)
+library(shinyjs)
+library(shinyRatings)
+library(shinycssloaders)
+library(bsicons)
 source("./ui.R")
 source("./server.R")
 

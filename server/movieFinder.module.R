@@ -26,7 +26,7 @@ movieFinderMovieListUi <- function(id, dtId) {
         card_body(
           fillable = FALSE,
           actionButton("newMoviesRatingNotificationSubmitBtn", "Get Recommendations"),
-          actionButton("newMoviesRatingNotificationClearBtn", "Clear Ratings")
+          actionButton("newMoviesRatingNotificationClearBtn", "Close")
         )
       )
     ),

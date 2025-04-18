@@ -77,7 +77,7 @@ movieRecommendationsServer <- function(id, reactive_user_selection, allMovies) {
       recom_result <- data.frame(matrix(NA,10))
       
       observe({
-        hidePageSpinner()
+        shinycssloaders::hidePageSpinner()
       })
       
       if (as.character(recom_list[1])=='character(0)'){
